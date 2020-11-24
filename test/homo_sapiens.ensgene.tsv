@@ -1,0 +1,6 @@
+ensgene mirbase_accession       ortholog        symbol  goterm  ensfamily       uniprot description     ensprotein      interpro        gene_biotype    embl    mirbase_id      hgnc_symbol
+     ensfamily_description   enstranscript   interproterm    refseq  entrezgene      go      synonym
+ENSG00000275852 mirbase_accession       ortholog        LINC01742                               long intergenic non-protein coding RNA 1742 [Source:HGNC Symbol;Acc:HGNC:52530]
+        lncRNA          mirbase_id      LINC01742
+
+ENSG00000224440 mirbase_accession       ortholog        CXorf51A                PTHR37876       A0A1B0GTR3      chromosome X open reading frame 51A [Source:HGNC Symbol;Acc:HGNC:30533] ENSP00000489806 IPR040433       protein_coding  AL109836        mirbase_id      CXorf51A                        Spermatid nuclear transition protein    NM_001144064    100129239               CXorf51

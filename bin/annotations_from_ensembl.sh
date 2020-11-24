@@ -21,7 +21,7 @@ if [ ! -s "$JSON_FILE_PATH/$species/${species}_genes.json" ]; then
 fi
 
 # header file
-cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $species.ensgene_test.tsv
+cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $species.ensgene.tsv
 
 for k in $(cat "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" | jq -cn --stream 'fromstream(1|truncate_stream(inputs))' | head -n2); do 
  
@@ -88,6 +88,6 @@ for k in $(cat "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" | jq -cn --st
 	synonym=$(echo "$k" | jq "$property_synonym")
 	echo "synonym - $synonym"
 	
-	echo -e "\n$ensgene\tmirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\tmirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $species.ensgene_test.tsv
+	echo -e "\n$ensgene\tmirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\tmirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $species.ensgene.tsv
 	echo -e "\n########################\n";
 done 
