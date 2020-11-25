@@ -16,8 +16,8 @@ while read property_field; do
     export $property_field; 
 done < $config
 
-if [ ! -s "$JSON_FILE_PATH/$species/${species}_genes.json" ]; then
-   echo "ERROR : $JSON_FILE_PATH/$species/${species}_genes.json doesn't exist"
+if [ ! -s "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" ]; then
+   echo "ERROR : $ENSEMBL_JSON_PATH/$species/${species}_genes.json doesn't exist"
 fi
 
 # header file
