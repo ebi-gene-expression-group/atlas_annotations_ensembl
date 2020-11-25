@@ -37,7 +37,7 @@ mutiple_values_with_separator () {
 # header file
 cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $species.ensgene.tsv
 
-for k in $(cat "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" | jq -cn --stream 'fromstream(1|truncate_stream(inputs))' | head -n2); do 
+for k in $(cat "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" | jq -cn --stream 'fromstream(1|truncate_stream(inputs))' | head -n10); do 
  
   ensgene=$(mutiple_values_with_separator "$k" "$property_ensgene")
   echo "ensgene - $ensgene"
