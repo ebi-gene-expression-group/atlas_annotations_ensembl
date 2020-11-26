@@ -9,6 +9,7 @@ species=$(basename $config |  sed 's/\.[^ ]*//g')
 
 ## check env variables
 [ ! -z ${ENSEMBL_JSON_PATH+x} ] || (echo "Env var ENSEMBL_JSON_PATH not defined." && exit 1)
+[ ! -z ${OUTPUT_TSV_PATH+x} ] || (echo "Env var OUTPUT_TSV_PATH not defined." && exit 1)
 
 ## export property fields
 while read property_field; do 
@@ -28,14 +29,17 @@ mutiple_values_with_separator () {
   number_of_values=$(echo "$json_row" | jq -r "$property_field" | wc -l)
 
   if [ $number_of_values -gt 1 ]; then
-    echo "$json_row" | jq -r "$property_field" | tr '\n' '@@'
+    echo "$json_row" | jq -r "$property_field" | tr '\n' '@@' | sed 's/.$//' 
   else
     echo "$json_row" | jq -r "$property_field"
   fi  
 }
 
+OUTPUT_TSV=${OUTPUT_TSV_PATH}/${species}.ensgene.tsv
+touch $OUTPUT_TSV
+
 # header file
-cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $species.ensgene.tsv
+cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $OUTPUT_TSV
 
 for k in $(cat "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" | jq -cn --stream 'fromstream(1|truncate_stream(inputs))' | head -n10); do 
  
@@ -102,9 +106,9 @@ for k in $(cat "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" | jq -cn --st
   synonym=$(mutiple_values_with_separator "$k" "$property_synonym")
   echo "synonym - $synonym"
   
-  echo -e "\n$ensgene\tmirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\tmirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $species.ensgene.tsv
+  echo -e "\n$ensgene\tmirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\tmirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $OUTPUT_TSV
   echo -e "\n########################\n";
 done 
 
 ## remove spaces between lines
-sed -i '/^ *$/d' $species.ensgene.tsv
+sed -i '/^ *$/d' $OUTPUT_TSV
