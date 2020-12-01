@@ -41,13 +41,14 @@ touch $OUTPUT_TSV
 # header file
 cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $OUTPUT_TSV
 
-for k in $(cat "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" | jq -cn --stream 'fromstream(1|truncate_stream(inputs))' | head -n10); do 
- 
+jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" \
+| while read k; do
+
   ensgene=$(mutiple_values_with_separator "$k" "$property_ensgene")
   echo "ensgene - $ensgene"
   
-  #mirbase_accession=$(mutiple_values_with_separator "$k" "$property_mirbase_accession")
-  #echo "mirbase_accession - $mirbase_accession"
+  mirbase_accession=$(mutiple_values_with_separator "$k" "$property_mirbase_accession")
+  echo "mirbase_accession - $mirbase_accession"
   
   #ortholog=$(mutiple_values_with_separator "$k" "$property_ortholog")
   #echo "ortholog - $ortholog"
@@ -79,8 +80,8 @@ for k in $(cat "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" | jq -cn --st
   embl=$(mutiple_values_with_separator "$k" "$property_embl")
   echo "embl - $embl"
   
-  #mirbase_id=$(mutiple_values_with_separator "$k" "$property_mirbase_id")
-  #echo "mirbase_id - $mirbase_id"
+  mirbase_id=$(mutiple_values_with_separator "$k" "$property_mirbase_id")
+  echo "mirbase_id - $mirbase_id"
   
   hgnc_symbol=$(mutiple_values_with_separator "$k" "$property_hgnc_symbol")
   echo "hgnc_symbol - $hgnc_symbol"
