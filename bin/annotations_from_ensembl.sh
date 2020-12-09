@@ -29,7 +29,7 @@ mutiple_values_with_separator () {
   number_of_values=$(echo "$json_row" | jq -r "$property_field" | wc -l)
 
   if [ $number_of_values -gt 1 ]; then
-    echo "$json_row" | jq -r "$property_field" | awk -v ORS='@@' '{print $1}' | sed 's/.\{2\}$//'
+    echo "$json_row" | jq -r "$property_field" | uniq | awk -F'\n' -v ORS='@@' '{print $1}' | sed 's/.\{2\}$//'
   else
     echo "$json_row" | jq -r "$property_field"
   fi  
