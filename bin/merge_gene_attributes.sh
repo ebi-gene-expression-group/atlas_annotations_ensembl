@@ -11,14 +11,13 @@ IFS="
 "
 
 ## check env variables
-[ ! -z ${FIELD_NAME1+x} ] || (echo "Env var FIELD_NAME1 not defined." && exit 1)
-[ ! -z ${FIELD_NAME2+x} ] || (echo "Env var FIELD_NAME2 not defined." && exit 1)
+[ ! -z ${ANNOTATION_PATH+x} ] || (echo "Env var ANNOTATION_PATH not defined." && exit 1)
 [ ! -z ${OUTPUT_PATH+x} ] || (echo "Env var OUTPUT_PATH not defined." && exit 1)
 
 
 annotation_file=$1
-col1=$FIELD_NAME1
-col2=$FIELD_NAME2
+col1=$2
+col2=$3
 
 species=$(basename $annotation_file |  sed 's/\.[^ ]*//g')
 output_annotation_file=$OUTPUT_PATH/${species}.${col1}.${col2}.tsv
