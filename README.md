@@ -28,7 +28,7 @@ cd /ebi/microarray/home/suhaib/json_Ensembl/annotations
 ```
 
 
-#### Make two column TSV gene attribute files used decoration
+### Make two column TSV gene attribute files used decoration
 
 #### Entry points
 
