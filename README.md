@@ -64,6 +64,14 @@ bash test/run_check_empty_columns.sh
 ```
 Running this script will scan through all the TSVs column-wise to determine which column is totally empty. It will not identify columns if only few or more values are missing.
 
+
+### [WIP] Microarray array designs test queries
+
+```
+export ENSEMBL_JSON_PATH=/hps/nobackup2/production/ensembl/ensprod/search_dumps/release-101b/vertebrates/json
+bash test/test_array_design_queries.sh
+```
+
 ### Structure
 
 #### ./annsrcs
