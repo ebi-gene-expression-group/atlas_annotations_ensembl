@@ -52,7 +52,17 @@ For example, make two column tsv file with attributes 'ensgene' (gene_id) and 's
 For all other species that are defined in `./annsrcs/ensembl` can found in below directory
 ```
 cd /ebi/microarray/home/suhaib/json_Ensembl/ensembl
+
 ```
+
+### Debug for empty columns(gene attributes)
+
+There will instances where gene attribute values will be missing in the E! JSON dumps. For those species and attributes values are missing can be found by running the below script 
+```
+export ANNOTATIONS_PATH=/ebi/microarray/home/suhaib/json_Ensembl/annotations
+bash test/run_annotations_from_ensembl.sh
+```
+Running this script will scan through all the TSVs column-wise to determine which column is totally empty. It will identify columns if only few or more values are missing.
 
 ### Structure
 
