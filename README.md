@@ -45,7 +45,7 @@ export FIELD_NAME2='symbol'
 export OUTPUT_PATH=/ebi/microarray/home/suhaib/json_Ensembl/ensembl
 ```
 
-By triggering the entry point script `test/run_merge_gene_attributes.sh` this script eventually calls the `bin/annotations_from_ensembl.sh` taking desired arguments `field1` and `field2` to concatenate for all the species in `OUTPUT_TSV_PATH`
+By triggering the entry point script `test/run_merge_gene_attributes.sh` this script eventually calls the `bin/merge_gene_attributes.sh` taking desired arguments `field1` and `field2` to concatenate for all the species in `OUTPUT_TSV_PATH`
 
 For example, make two column tsv file with attributes 'ensgene' (gene_id) and 'symbol' (gene name) that is used for decoration (rempapping of gene ids with gene names in atlas production) as shown in for human `test/homo_sapiens.ensgene.symbol.tsv` from using input file `homo_sapiens.ensgene.tsv` located in `OUTPUT_TSV_PATH`
 
