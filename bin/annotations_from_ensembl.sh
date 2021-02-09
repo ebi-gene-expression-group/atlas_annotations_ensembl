@@ -8,8 +8,8 @@ config=$1
 species=$(basename $config |  sed 's/\.[^ ]*//g')
 
 ## check env variables
-[ ! -z ${ENSEMBL_JSON_PATH+x} ] || (echo "Env var ENSEMBL_JSON_PATH not defined." && exit 1)
-[ ! -z ${OUTPUT_TSV_PATH+x} ] || (echo "Env var OUTPUT_TSV_PATH not defined." && exit 1)
+[ -z ${ENSEMBL_JSON_PATH+x} ] && echo "Env var ENSEMBL_JSON_PATH not defined." && exit 1
+[ -z ${ANNOTATIONS_PATH+x} ] && echo "Env var OUTPUT_TSV_PATH not defined." && exit 1
 
 ## export property fields
 while read property_field; do 
@@ -35,7 +35,7 @@ mutiple_values_with_separator () {
   fi  
 }
 
-OUTPUT_TSV=${OUTPUT_TSV_PATH}/${species}.ensgene.tsv
+OUTPUT_TSV=${ANNOTATIONS_PATH}/${species}.ensgene.tsv
 touch $OUTPUT_TSV
 
 # header file

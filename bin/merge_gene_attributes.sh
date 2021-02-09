@@ -10,17 +10,14 @@ scriptDir=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 IFS="
 "
 
-## check env variables
-[ ! -z ${ANNOTATION_PATH+x} ] || (echo "Env var ANNOTATION_PATH not defined." && exit 1)
-[ ! -z ${OUTPUT_PATH+x} ] || (echo "Env var OUTPUT_PATH not defined." && exit 1)
-
 
 annotation_file=$1
 col1=$2
 col2=$3
 
 species=$(basename $annotation_file |  sed 's/\.[^ ]*//g')
-output_annotation_file=$OUTPUT_PATH/${species}.${col1}.${col2}.tsv
+
+output_annotation_file=$GENE_ATTRIBUTES_PATH/${species}.${col1}.${col2}.tsv
 
 rm -rf $output_annotation_file
 touch $output_annotation_file
