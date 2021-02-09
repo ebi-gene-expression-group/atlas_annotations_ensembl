@@ -9,7 +9,7 @@ species=$(basename $config |  sed 's/\.[^ ]*//g')
 
 ## check env variables
 [ -z ${ENSEMBL_JSON_PATH+x} ] && echo "Env var ENSEMBL_JSON_PATH not defined." && exit 1
-[ -z ${ANNOTATIONS_PATH+x} ] && echo "Env var OUTPUT_TSV_PATH not defined." && exit 1
+[ -z ${ANNOTATIONS_PATH+x} ] && echo "Env var ANNOTATIONS_PATH not defined." && exit 1
 
 ## export property fields
 while read property_field; do 
@@ -35,11 +35,11 @@ mutiple_values_with_separator () {
   fi  
 }
 
-OUTPUT_TSV=${ANNOTATIONS_PATH}/${species}.ensgene.tsv
-touch $OUTPUT_TSV
+output_tsv=${ANNOTATIONS_PATH}/${species}.ensgene.tsv
+touch $output_tsv
 
 # header file
-cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $OUTPUT_TSV
+cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $output_tsv
 
 jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" \
 | while read k; do
@@ -107,9 +107,9 @@ jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$ENSEMBL_JSON_PATH/$spe
   synonym=$(mutiple_values_with_separator "$k" "$property_synonym")
   echo "synonym - $synonym"
   
-  echo -e "\n$ensgene\tmirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\tmirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $OUTPUT_TSV
+  echo -e "\n$ensgene\tmirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\tmirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $output_tsv
   echo -e "\n########################\n";
 done 
 
 ## remove spaces between lines
-sed -i '/^ *$/d' $OUTPUT_TSV
+sed -i '/^ *$/d' $output_tsv

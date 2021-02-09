@@ -5,7 +5,7 @@ export PATH=$scriptDir/../bin:$scriptDir/../test:$scriptDir/../annsrcs/ensembl:$
 
 IFS="
 "
-[ ! -z ${ANNOTATION_PATH+x} ] || (echo "Env var ANNOTATION_PATH not defined." && exit 1)
+[ ! -z ${ANNOTATIONS_PATH+x} ] || (echo "Env var ANNOTATIONS_PATH not defined." && exit 1)
 
 check_empty_columns.sh > /tmp/logs.txt && cat /tmp/logs.txt | grep 'emptycol'
 

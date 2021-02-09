@@ -1,35 +1,37 @@
 #!/usr/bin/env bash
 
-## This script takes two field name that is defined in merged annotation file as args and exports file extracting two fields names
-## example make tsv of 
-# 'ensgene' and 'enstranscript' or 
-# 'ensgene' and 'symbol' i.e gene_id and gene_name ( we use these file for redocaration of gene and transctipt file in GXA and SCXA)
+# Make two column TSV gene attribute mapping file used for decoration
+# This script takes 3 arguments: 
+# 1. Annotation file: tsv file produced by annotations_from_ensembl.sh
+# 2. Field 1 - gene id (e.g. ensgene)
+# 3. Field 2 - gene name (e.g. symbol)
 
 scriptDir=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 IFS="
 "
+# check env variables 
+[ -z ${GENE_ATTRIBUTES_PATH+x} ] && echo "Env var GENE_ATTRIBUTES_PATH not defined." && exit 1
 
-
-annotation_file=$1
+# set argumets 
+anotation_file=$1
 col1=$2
 col2=$3
 
-species=$(basename $annotation_file |  sed 's/\.[^ ]*//g')
+species=$(basename $anotation_file |  sed 's/\.[^ ]*//g')
+output_tsv=$GENE_ATTRIBUTES_PATH/${species}.${col1}.${col2}.tsv
 
-output_annotation_file=$GENE_ATTRIBUTES_PATH/${species}.${col1}.${col2}.tsv
-
-rm -rf $output_annotation_file
-touch $output_annotation_file
+rm -rf $output_tsv
+touch $output_tsv
 
 ## extract column number of the atrribute
-col_num1=$(cat $annotation_file | head -n1 | tr '\t' '\n' | grep -nw "$col1" | sed 's/\:.*//g')
-col_num2=$(cat $annotation_file | head -n1 | tr '\t' '\n' | grep -nw "$col2" | sed 's/\:.*//g')
+col_num1=$(cat $anotation_file | head -n1 | tr '\t' '\n' | grep -nw "$col1" | sed 's/\:.*//g')
+col_num2=$(cat $anotation_file | head -n1 | tr '\t' '\n' | grep -nw "$col2" | sed 's/\:.*//g')
 
 if [[ ! -z "$col_num1" ]] && [[ ! -z "col_num2" ]]; then
-    joined_cols=$(cat $annotation_file | cut -f"$col_num1,$col_num2" -d $'\t' | awk 'NF > 0' | awk '{if (NR!=1) {print}}')
+    joined_cols=$(cat $anotation_file | cut -f"$col_num1,$col_num2" -d $'\t' | awk 'NF > 0' | awk '{if (NR!=1) {print}}')
 else 
-    echo "ERROR: $col1 or $col2 column is missing in $annotation_file"
+    echo "ERROR: $col1 or $col2 column is missing in $anotation_file"
     exit 1
 fi     
 
@@ -44,12 +46,12 @@ echo -e "$joined_cols" \
             
            echo -e "$secondary_ids" \
            | while read secondary_id; do
-            	paste <(echo "$primary_id") <(echo "$secondary_id") -d '\t' >> $output_annotation_file
+            	paste <(echo "$primary_id") <(echo "$secondary_id") -d '\t' >> $output_tsv
             done 
 
         else
             secondary_id=$(echo -e $line | awk -F '\t' '{ print $2 }')
-            paste <(echo "$primary_id") <(echo "$secondary_id") -d '\t' >> $output_annotation_file
+            paste -d '\t' <(echo "$primary_id") <(echo "$secondary_id") >> $output_tsv
         fi   
         
 	done

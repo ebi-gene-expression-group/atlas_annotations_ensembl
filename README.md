@@ -1,10 +1,15 @@
 # Atlas gene annotations from Ensembl
 
-In this repository, there are underlying scripts that extract gene attributes from large JSON dumps provided by Ensembl for different species types. The gene attributes extracted from JSON are populates each attribute with its associated values in a TSV format. The final aggregated gene-annotation file is used for loading into Solr indexes as bioentities collection. Execution of tasks here require that `bin/` directory in the root of this repo is part of the path, and that the following executables are available:
+This repository contains scripts that extract gene attributes from large JSON dumps provided by Ensembl for a range of species. Gene attributes extracted from JSON populate the corresponding fields in an output TSV file (a gene-by-annotation table).
+
+The final aggregated gene annotation file is loaded into Solr indexes as a bioentities collection. To run the scripts, please make sure the `/bin` directory is in the PATH. The following dependencies need to be installed: 
 
 - awk
 - jq (1.5)
+- bats (for testing)
 
+### Testing the scripts
+run `atlas_annotations_ensembl_run_tests.sh` in order to execute the tests. 
 
 ### Extract annotations from JSON dumps to TSV formatted files 
 
@@ -17,18 +22,19 @@ By triggering the entry script `test/run_annotations_from_ensembl.sh` you will e
 Before running the entry point script it is important to set environmental variables as prerequisite.
 ```
 ## prerequisites - export environmental variables
-## Note : These paths are used for testing purpose. While in production we need these output files to be dumped in traditional $ATLAS_PROD/bioentity_properties/annotations 
+## Note : These paths are used for testing purpose. While in production, we need these output files to be dumped in traditional $ATLAS_PROD/bioentity_properties/annotations 
 export ENSEMBL_JSON_PATH=/hps/nobackup2/production/ensembl/ensprod/search_dumps/release-101b/vertebrates/json (pilot file path provided by Mark from Ensembl for testing)
-export OUTPUT_TSV_PATH=/ebi/microarray/home/suhaib/json_Ensembl/annotations
+export ANNOTATIONS_PATH=/ebi/microarray/home/suhaib/json_Ensembl/annotations
 export LOG_PATH=/ebi/microarray/home/suhaib/json_Ensembl/logs
 ```
-The truncated test output TSV file for human `test/homo_sapiens.ensgene.tsv`  For all other species that are defined in `./annsrcs/ensembl` can found in below directory
+The truncated test output TSV file for human is in `test/homo_sapiens.ensgene.tsv`.  
+For all other species that are defined in `./annsrcs/ensembl`, annotations can be found in this directory:
+
 ```
-cd /ebi/microarray/home/suhaib/json_Ensembl/annotations
+/ebi/microarray/home/suhaib/json_Ensembl/annotations
 ```
 
-
-### Make two column TSV gene attribute files used decoration
+### Make two column TSV gene attributes file used for decoration
 
 #### Entry points
 
@@ -39,10 +45,8 @@ Before running the entry point script it is important to set environmental varia
 ```
 ## prerequisites - export environmental variables
 ## Note : These paths are used for testing purpose. While in production we need these output files to be dumped in traditional $ATLAS_PROD/bioentity_properties/ensembl 
-export ANNOTATIONS_PATH=/ebi/microarray/home/suhaib/json_Ensembl/annotations (same as OUTPUT_TSV_PATH in the above task)
-export FIELD_NAME1='ensgene'
-export FIELD_NAME2='symbol'
-export OUTPUT_PATH=/ebi/microarray/home/suhaib/json_Ensembl/ensembl
+export ANNOTATIONS_PATH=/ebi/microarray/home/suhaib/json_Ensembl/annotations
+export GENE_ATTRIBUTES_PATH=/ebi/microarray/home/suhaib/json_Ensembl/ensembl
 ```
 
 By triggering the entry point script `test/run_merge_gene_attributes.sh` this script eventually calls the `bin/merge_gene_attributes.sh` taking desired arguments `field1` and `field2` to concatenate for all the species in `OUTPUT_TSV_PATH`
@@ -57,7 +61,7 @@ cd /ebi/microarray/home/suhaib/json_Ensembl/ensembl
 
 ### Debug for empty columns(gene attributes)
 
-There will be instances where gene attribute values will be missing in the E! JSON dumps. For those species and attributes values that are missing can be found by running the below script 
+There will be instances where gene attribute values will be missing in the E! JSON dumps. For those species and attributes, the missing values can be found by running the script below:
 ```
 export ANNOTATIONS_PATH=/ebi/microarray/home/suhaib/json_Ensembl/annotations
 bash test/run_check_empty_columns.sh
@@ -75,10 +79,10 @@ bash test/test_array_design_queries.sh
 ### Structure
 
 #### ./annsrcs
-Annotation declared as jq query in the species wise configuration files describing the mapping of Atlas properties into bioentities collection 
+Annotation declared as jq query in the species-wise configuration files. These files describe the mapping of Atlas properties into the bioentities collection. 
 
 #### ./bin
-Executables that extract Atlas annotations in desired format.
+Executables that extract Atlas annotations in a desired format.
 
 #### ./test
 Main execution run_* scripts that executes scripts in /bin. Also the source of example output tsv files. 

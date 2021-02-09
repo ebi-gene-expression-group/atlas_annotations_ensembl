@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ ! -z ${ANNOTATION_PATH+x} ] || (echo "Env var ANNOTATION_PATH not defined." && exit 1)
+[ ! -z ${ANNOTATIONS_PATH+x} ] || (echo "Env var ANNOTATIONS_PATH not defined." && exit 1)
 
 
 pushd ${ANNOTATION_PATH}
