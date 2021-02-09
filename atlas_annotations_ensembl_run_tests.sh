@@ -18,12 +18,5 @@ export field_name2='symbol'
 [ ! -d "$ANNOTATIONS_PATH" ] && mkdir -p "$ANNOTATIONS_PATH"
 [ ! -d "$GENE_ATTRIBUTES_PATH" ] && mkdir -p "$GENE_ATTRIBUTES_PATH"
 
-
 # run bats tests 
 ./atlas_annotations_ensembl_tests.bats
-
-
-
-
-
-
