@@ -8,7 +8,6 @@ IFS="
 
 [ ! -z ${ENSEMBL_JSON_PATH+x} ] || (echo "Env var ENSEMBL_JSON_PATH not defined." && exit 1)
 [ ! -z ${OUTPUT_TSV_PATH+x} ] || (echo "Env var OUTPUT_TSV_PATH not defined." && exit 1)
-[ ! -z ${LOG_PATH+x} ] || (echo "Env var LOG_PATH not defined." && exit 1)
 
 
 for species_config in $(find $scriptDir/../annsrcs/ensembl -type f); do
