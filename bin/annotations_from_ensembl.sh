@@ -17,7 +17,7 @@ while read property_field; do
 done < $config
 
 if [ ! -s "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" ]; then
-   echo "ERROR : $ENSEMBL_JSON_PATH/$species/${species}_genes.json doesn't exist"
+   echo "ERROR : $ENSEMBL_JSON_PATH/$species/${species}_genes.json doesn't exist" && exit 1
 fi
 
 
@@ -35,8 +35,7 @@ mutiple_values_with_separator () {
   fi  
 }
 
-output_tsv=${ANNOTATIONS_PATH}/${species}.ensgene.tsv
-touch $output_tsv
+output_tsv=${species}.ensgene.tsv
 
 # header file
 cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $output_tsv
@@ -112,4 +111,5 @@ jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$ENSEMBL_JSON_PATH/$spe
 done 
 
 ## remove spaces between lines
-sed -i '/^ *$/d' $output_tsv
+#TODO: uncomment this before merging
+#sed -i '/^ *$/d' $output_tsv
