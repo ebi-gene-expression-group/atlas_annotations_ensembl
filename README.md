@@ -10,13 +10,12 @@ The final aggregated gene annotation file is loaded into Solr indexes as a bioen
 - nextflow (workflow execution)
 
 ### Required env variables
-The following environment variables need to be defined for the scripts to run correctly (see example data under paths provided): 
+The following environment variables need to be defined for the scripts to run correctly: 
 ```
-export ENSEMBL_JSON_PATH=/hps/nobackup2/production/ensembl/ensprod/search_dumps/release-101b/vertebrates/json (pilot file path provided by Mark from Ensembl for testing)
-export ANNOTATIONS_PATH=/ebi/microarray/home/suhaib/json_Ensembl/annotations
-export GENE_ATTRIBUTES_PATH=/ebi/microarray/home/suhaib/json_Ensembl/ensembl
-export LOG_PATH=/ebi/microarray/home/suhaib/json_Ensembl/logs
-
+export ENSEMBL_JSON_PATH=path/to/json/files
+export ANNOTATIONS_PATH=path/to/produced/annotation/file
+export GENE_ATTRIBUTES_PATH=path/to/produced/gene/attributes
+export LOG_PATH=path/to/log/files
 ```
 
 ### Testing the scripts
@@ -31,11 +30,6 @@ annotations_from_ensemb.sh <config_file>
 
 The truncated test output TSV file for human is in `example_outputs/homo_sapiens.ensgene.tsv`.  
 
-For species defined in `data/annsrcs/ensembl`, derived annotations can be found in this directory:
-
-```
-/ebi/microarray/home/suhaib/json_Ensembl/annotations
-```
 See truncated version of JSON file in `test_data/homo_sapiens`. 
 
 ### Make two column TSV gene attributes file (used for decoration)
@@ -49,11 +43,6 @@ merge_gene_attributes.sh <annotation_file> <field_name1> <field_name2>
 
 See example output in `test/homo_sapiens.ensgene.symbol.tsv` produced from input file `homo_sapiens.ensgene.tsv`. 
 
-For all other species that are defined in `./annsrcs/ensembl`, gene attribute files can be found in  
-```
-/ebi/microarray/home/suhaib/json_Ensembl/ensembl
-```
-
 ### Debug for empty columns (gene attributes)
 
 There will be instances where gene attribute values will be missing in the E! JSON dumps. For those attributes, the missing values can be determined by running the script below:
@@ -62,7 +51,7 @@ check_empty_columns.sh <annotation_file>
 ```
 - `annotation_file` is a TSV file with gene annotations produced by `annotations_from_ensemb.sh`
 
-Output log files will be placed under `$LOG_PATH`. Run `grep 'emptycol' < log_gile` to get empty columns. 
+Output log files will be placed under `$LOG_PATH`. Run `grep 'emptycol' < log_file` to get empty columns. 
 
 Running this script will scan through the TSV column-wise and determine which columns are empty. It will not identify pertially empty columns.
 
