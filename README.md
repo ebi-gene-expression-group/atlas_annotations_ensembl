@@ -62,7 +62,7 @@ check_empty_columns.sh <annotation_file>
 ```
 - `annotation_file` is a TSV file with gene annotations produced by `annotations_from_ensemb.sh`
 
-Output log files will be placed under `$LOG_PATH`. 
+Output log files will be placed under `$LOG_PATH`. Run `grep 'emptycol' < log_gile` to get empty columns. 
 
 Running this script will scan through the TSV column-wise and determine which columns are empty. It will not identify pertially empty columns.
 
@@ -73,7 +73,7 @@ Running this script will scan through the TSV column-wise and determine which co
 test_array_design_queries.sh
 ```
 
-### Workflow execution 
+## Workflow execution 
 It is important to keep in mind that this repository will need to be scaled for a large number of species and heavy JSON files. The Nextflow workflow addresses this by organising the scripts into a pipeline. To execute the workflow, run the following: 
 ```
 nextflow run main.nf -profile <profile> -ensembl_species_configs <ensembl_species_configs> 
