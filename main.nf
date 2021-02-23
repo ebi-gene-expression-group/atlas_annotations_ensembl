@@ -20,7 +20,7 @@ process run_annotations_from_ensembl {
 
     memory { 16.GB * task.attempt }
     maxRetries 3
-    errorStrategy { task.attempt<=3 ? 'retry' : 'finish' }
+    errorStrategy { task.attempt<=3 ? 'retry' : 'ignore' }
 
     input:
         val(config) from SELECTED_CONFIGS
@@ -43,7 +43,7 @@ process merge_gene_attributes {
 
     memory { 8.GB * task.attempt }
     maxRetries 3
-    errorStrategy { task.attempt<=3 ? 'retry' : 'finish' }
+    errorStrategy { task.attempt<=3 ? 'retry' : 'ignore' }
 
     input:
         file(annotation) from ANNOTATED_GENES
@@ -64,7 +64,7 @@ process check_empty_columns {
 
     memory { 8.GB * task.attempt }
     maxRetries 3
-    errorStrategy { task.attempt<=3 ? 'retry' : 'finish' }
+    errorStrategy { task.attempt<=3 ? 'retry' : 'ignore' }
     
     input:
         file(annotation) from CHECK_EMPTY_COLS
