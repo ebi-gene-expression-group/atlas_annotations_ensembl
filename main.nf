@@ -18,7 +18,7 @@ println "${ENSEMBL_JSON_PATH}"
 process run_annotations_from_ensembl {
     publishDir "${ANNOTATIONS_PATH}"
 
-    memory { 8.GB * task.attempt }
+    memory { 16.GB * task.attempt }
     maxRetries 3
     errorStrategy { task.attempt<=3 ? 'retry' : 'finish' }
 
