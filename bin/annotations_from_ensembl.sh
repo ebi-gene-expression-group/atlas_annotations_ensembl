@@ -17,7 +17,7 @@ while read property_field; do
 done < $config
 
 # find the file in a species-agnostic manner
-json_file=$(find "$ENSEMBL_JSON_PATH/$species/${species}_genes.json")
+json_file=$(find $ENSEMBL_JSON_PATH/$species/${species}_genes.json)
 
 if [ -z $json_file ]; then
    echo "ERROR : Search for $ENSEMBL_JSON_PATH/$species/${species}_genes.json did not produce any matches." && exit 1
