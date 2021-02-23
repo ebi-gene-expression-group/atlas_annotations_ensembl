@@ -16,8 +16,11 @@ while read property_field; do
   export $property_field; 
 done < $config
 
-if [ ! -s "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" ]; then
-   echo "ERROR : $ENSEMBL_JSON_PATH/$species/${species}_genes.json doesn't exist" && exit 1
+# find the file in a species-agnostic manner
+json_file=$(find "$ENSEMBL_JSON_PATH/$species/${species}_genes.json")
+
+if [ ! -z $json_file ]; then
+   echo "ERROR : Search for $ENSEMBL_JSON_PATH/$species/${species}_genes.json did not produce any matches." && exit 1
 fi
 
 
@@ -40,7 +43,7 @@ output_tsv=${species}.ensgene.tsv
 # header file
 cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $output_tsv
 
-jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" \
+jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$json_file" \
 | while read k; do
 
   ensgene=$(mutiple_values_with_separator "$k" "$property_ensgene")
