@@ -7,8 +7,16 @@ if(params.run_selected_species == "True"){
                               .splitCsv()
                               .flatten()
                               .map{ "${params.ensembl_species_configs}".concat("/").concat(it).concat(".config") }
+    
+    SPECIES_LIST = Channel.fromPath(params.ensembl_species_list)
+                          .splitCsv()
+                          .flatten()
 } else { 
     SELECTED_CONFIGS = Channel.fromPath("${params.ensembl_species_configs}/*")
+
+    SPECIES_LIST = Channel.fromPath("${params.ensembl_species_configs}/*")
+                          .map{ it.baseName }
+
 }
 
 // extract annotations from JSON files
@@ -26,10 +34,11 @@ process run_annotations_from_ensembl {
 
     input:
         val(config) from SELECTED_CONFIGS
+        val(species) from SPECIES_LIST
 
     output:
-        file("*.ensgene.tsv") into ANNOTATED_GENES
-        file("*.ensgene.tsv") into CHECK_EMPTY_COLS
+        tuple file("${species}.ensgene.tsv"), val(species) into ANNOTATED_GENES
+        file("${species}.ensgene.tsv") into CHECK_EMPTY_COLS
 
     """
     annotations_from_ensembl.sh "${config}"
@@ -50,16 +59,18 @@ process merge_gene_attributes {
     errorStrategy { task.attempt<=3 ? 'retry' : 'ignore' }
 
     input:
-        file(annotation) from ANNOTATED_GENES
+        tuple file(annotation), val(species) from ANNOTATED_GENES
         val(gene_id_col) from GENE_ID_COL
         val(gene_name_col) from GENE_NAME_COL
+        val
     
     output:
-        file("*.${gene_id_col}.${gene_name_col}.tsv")
+        file("${species}.${gene_id_col}.${gene_name_col}_genes.tsv")
 
     
     """
     merge_gene_attributes.sh "${annotation}" "${gene_id_col}" "${gene_name_col}"
+    mv ${species}.${gene_id_col}.${gene_name_col}.tsv ${species}.${gene_id_col}.${gene_name_col}_genes.tsv
     """
 }
 
@@ -78,6 +89,7 @@ process check_empty_columns {
         file("${annotation}.log") into CHECKED_ANNOTATIONS
 
     """
-    check_empty_columns.sh ${annotation} > ${annotation}.log
+    check_empty_columns.sh ${annotation} > ${annotation}.log_tmp
+    mv ${annotation}.log_tmp ${annotation}.log
     """
 }
