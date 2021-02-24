@@ -16,7 +16,9 @@ println "${ANNOTATIONS_PATH}"
 println "${ENSEMBL_JSON_PATH}"
 
 process run_annotations_from_ensembl {
+    
     publishDir "${ANNOTATIONS_PATH}"
+    conda "${baseDir}/envs/jq.yml"
 
     memory { 16.GB * task.attempt }
     maxRetries 3
@@ -39,7 +41,9 @@ GENE_ID_COL = Channel.from(params.gene_id_col)
 GENE_NAME_COL = Channel.from(params.gene_name_col)
 
 process merge_gene_attributes { 
+
     publishDir "${GENE_ATTRIBUTES_PATH}"
+    conda "${baseDir}/envs/jq.yml"
 
     memory { 8.GB * task.attempt }
     maxRetries 3
@@ -60,6 +64,7 @@ process merge_gene_attributes {
 }
 
 process check_empty_columns {
+    
     publishDir "${LOG_PATH}"
 
     memory { 8.GB * task.attempt }
