@@ -23,7 +23,7 @@
 }
 
 @test "Check empty columns" {
-    run check_empty_columns.sh $ANNOTATIONS_PATH/homo_sapiens.ensgene.tsv > $LOG_PATH/homo_sapiens.ensgene.tsv.log
+    run check_empty_columns.sh $ANNOTATIONS_PATH/homo_sapiens.ensgene.tsv
 
     echo "status = ${status}"
     echo "output = ${output}"

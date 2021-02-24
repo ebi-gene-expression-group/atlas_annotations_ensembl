@@ -109,10 +109,10 @@ jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$json_file" \
   synonym=$(mutiple_values_with_separator "$k" "$property_synonym")
   echo "synonym - $synonym"
   
-  echo -e "\n$ensgene\tmirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\tmirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $output_tsv
+  echo -e "\n$ensgene\t$mirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\t$mirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $output_tsv
   echo -e "\n########################\n";
 done 
 
 ## remove spaces between lines
 #TODO: uncomment this before merging
-sed -i '/^ *$/d' $output_tsv
+#sed -i '/^ *$/d' $output_tsv

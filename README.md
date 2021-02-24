@@ -51,7 +51,8 @@ check_empty_columns.sh <annotation_file>
 ```
 - `annotation_file` is a TSV file with gene annotations produced by `annotations_from_ensemb.sh`
 
-Output log files will be placed under `$LOG_PATH`. Run `grep 'emptycol' < log_file` to get empty columns. 
+Output log files will be placed under `$LOG_PATH`. 
+Run `grep 'Error' < log_file` to get empty columns and `grep 'Warning' < log_file` to get columns which are at least half-empty. 
 
 Running this script will scan through the TSV column-wise and determine which columns are empty. It will not identify pertially empty columns.
 
