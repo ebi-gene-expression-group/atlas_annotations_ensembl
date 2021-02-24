@@ -10,28 +10,28 @@ scriptDir=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 IFS="
 "
-# check env variables 
+# check env variables; outputs are directed there at the workflow level
 [ -z ${GENE_ATTRIBUTES_PATH+x} ] && echo "Env var GENE_ATTRIBUTES_PATH not defined." && exit 1
 
 # set argumets 
-anotation_file=$1
+annotation_file=$1
 col1=$2
 col2=$3
 
-species=$(basename $anotation_file |  sed 's/\.[^ ]*//g')
-output_tsv=$GENE_ATTRIBUTES_PATH/${species}.${col1}.${col2}.tsv
+species=$(basename $annotation_file |  sed 's/\.[^ ]*//g')
+output_tsv=${species}.${col1}.${col2}.tsv
 
 rm -rf $output_tsv
 touch $output_tsv
 
 ## extract column number of the atrribute
-col_num1=$(cat $anotation_file | head -n1 | tr '\t' '\n' | grep -nw "$col1" | sed 's/\:.*//g')
-col_num2=$(cat $anotation_file | head -n1 | tr '\t' '\n' | grep -nw "$col2" | sed 's/\:.*//g')
+col_num1=$(cat $annotation_file | head -n1 | tr '\t' '\n' | grep -nw "$col1" | sed 's/\:.*//g')
+col_num2=$(cat $annotation_file | head -n1 | tr '\t' '\n' | grep -nw "$col2" | sed 's/\:.*//g')
 
 if [[ ! -z "$col_num1" ]] && [[ ! -z "col_num2" ]]; then
-    joined_cols=$(cat $anotation_file | cut -f"$col_num1,$col_num2" -d $'\t' | awk 'NF > 0' | awk '{if (NR!=1) {print}}')
+    joined_cols=$(cat $annotation_file | cut -f"$col_num1,$col_num2" -d $'\t' | awk 'NF > 0' | awk '{if (NR!=1) {print}}')
 else 
-    echo "ERROR: $col1 or $col2 column is missing in $anotation_file"
+    echo "ERROR: $col1 or $col2 column is missing in $annotation_file"
     exit 1
 fi     
 

@@ -7,6 +7,7 @@ export PATH=$scriptDir/bin:$scriptDir/test:$scriptDir/annsrcs/ensembl:$PATH
 export ENSEMBL_JSON_PATH="test_data"
 export ANNOTATIONS_PATH="test_data/outputs/annotations"
 export GENE_ATTRIBUTES_PATH="test_data/outputs/gene_attributes"
+export LOG_PATH="test_data/outputs"
 export config="test_data/homo_sapiens.config"
 export species=$(basename $config |  sed 's/\.[^ ]*//g')
 

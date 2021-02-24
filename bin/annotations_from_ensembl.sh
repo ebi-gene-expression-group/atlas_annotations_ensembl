@@ -16,8 +16,11 @@ while read property_field; do
   export $property_field; 
 done < $config
 
-if [ ! -s "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" ]; then
-   echo "ERROR : $ENSEMBL_JSON_PATH/$species/${species}_genes.json doesn't exist"
+# find the file in a species-agnostic manner
+json_file=$(find $ENSEMBL_JSON_PATH/$species/${species}_genes.json)
+
+if [ ! -f ${json_file} ]; then
+   echo "ERROR : Search for $ENSEMBL_JSON_PATH/$species/${species}_genes.json did not produce any matches." && exit 1
 fi
 
 
@@ -35,13 +38,12 @@ mutiple_values_with_separator () {
   fi  
 }
 
-output_tsv=${ANNOTATIONS_PATH}/${species}.ensgene.tsv
-touch $output_tsv
+output_tsv=${species}.ensgene.tsv
 
 # header file
 cat $config | grep 'property' | awk -F"=" '{ print $1 }' | sed 's/property_//g' | tr '\n' '\t' > $output_tsv
 
-jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$ENSEMBL_JSON_PATH/$species/${species}_genes.json" \
+jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$json_file" \
 | while read k; do
 
   ensgene=$(mutiple_values_with_separator "$k" "$property_ensgene")
@@ -107,7 +109,7 @@ jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$ENSEMBL_JSON_PATH/$spe
   synonym=$(mutiple_values_with_separator "$k" "$property_synonym")
   echo "synonym - $synonym"
   
-  echo -e "\n$ensgene\tmirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\tmirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $output_tsv
+  echo -e "\n$ensgene\t$mirbase_accession\tortholog\t$symbol\t$goterm\t$ensfamily\t$uniprot\t$description\t$ensprotein\t$interpro\t$gene_biotype\t$embl\t$mirbase_id\t$hgnc_symbol\t$ensfamily_description\t$enstranscript\t$interproterm\t$refseq\t$entrezgene\t$go\t$synonym" | sed 's/"//g' >> $output_tsv
   echo -e "\n########################\n";
 done 
 
