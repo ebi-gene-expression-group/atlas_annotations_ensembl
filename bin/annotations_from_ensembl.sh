@@ -114,5 +114,4 @@ jq -cn --stream 'fromstream(1|truncate_stream(inputs))' "$json_file" \
 done 
 
 ## remove spaces between lines
-#TODO: uncomment this before merging
-#sed -i '/^ *$/d' $output_tsv
+sed -i '/^ *$/d' $output_tsv
