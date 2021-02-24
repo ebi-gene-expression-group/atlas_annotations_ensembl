@@ -2,21 +2,15 @@
 
 // define channels 
 if(params.run_selected_species == "True"){
-    // select relevant species config files
-    SELECTED_CONFIGS = Channel.fromPath(params.ensembl_species_list)
+    // select config files for specified species
+    SELECTED_ANNOTATED_CONFIGS = Channel.fromPath(params.ensembl_species_list)
                               .splitCsv()
                               .flatten()
-                              .map{ "${params.ensembl_species_configs}".concat("/").concat(it).concat(".config") }
+                              .map{ tuple("${params.ensembl_species_configs}".concat("/").concat(it).concat(".config"), it) }
     
-    SPECIES_LIST = Channel.fromPath(params.ensembl_species_list)
-                          .splitCsv()
-                          .flatten()
 } else { 
-    SELECTED_CONFIGS = Channel.fromPath("${params.ensembl_species_configs}/*")
-
-    SPECIES_LIST = Channel.fromPath("${params.ensembl_species_configs}/*")
-                          .map{ it.baseName }
-
+    SELECTED_ANNOTATED_CONFIGS = Channel.fromPath("${params.ensembl_species_configs}/*")
+                                        .map{ tuple(it, it.baseName) }
 }
 
 // extract annotations from JSON files
@@ -26,6 +20,7 @@ println "${ENSEMBL_JSON_PATH}"
 process run_annotations_from_ensembl {
     
     publishDir "${ANNOTATIONS_PATH}"
+    
     conda "${baseDir}/envs/jq.yml"
 
     memory { 16.GB * task.attempt }
@@ -33,8 +28,7 @@ process run_annotations_from_ensembl {
     errorStrategy { task.attempt<=3 ? 'retry' : 'ignore' }
 
     input:
-        val(config) from SELECTED_CONFIGS
-        val(species) from SPECIES_LIST
+        tuple val(config), val(species) from SELECTED_ANNOTATED_CONFIGS
 
     output:
         tuple file("${species}.ensgene.tsv"), val(species) into ANNOTATED_GENES
@@ -46,9 +40,8 @@ process run_annotations_from_ensembl {
 }
 
 // merge gene attributes 
-GENE_ID_COL = Channel.from(params.gene_id_col)
-GENE_NAME_COL = Channel.from(params.gene_name_col)
-
+gene_id_col = params.gene_id_col
+gene_name_col = params.gene_name_col
 process merge_gene_attributes { 
 
     publishDir "${GENE_ATTRIBUTES_PATH}"
@@ -60,9 +53,6 @@ process merge_gene_attributes {
 
     input:
         tuple file(annotation), val(species) from ANNOTATED_GENES
-        val(gene_id_col) from GENE_ID_COL
-        val(gene_name_col) from GENE_NAME_COL
-        val
     
     output:
         file("${species}.${gene_id_col}.${gene_name_col}_genes.tsv")
